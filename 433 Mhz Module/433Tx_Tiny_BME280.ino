@@ -1,37 +1,28 @@
-//Runs at 1Mhz
-#include <TinyBME280.h>
+//Works at 1Mhz
 #include <TinyWireM.h>
 #include <Manchester.h>
-
-int32_t  temperature, tempMSB, tempLSB, humidity = 0;
-const int BME280address = 119;
-
+#include "CORE_BME280_I2C.h"
+ 
+BME280_I2C sensebme; // Set to used address 0x77 as default // or BME280_I2C bme(0x76); // I2C using address 0x76
+ 
 void setup() {
-    TinyWireM.begin(); //must include this for the BME280 to work!
-    BME280setup();
-    man.setupTransmit(4, MAN_1200);
-}
+ man.setupTransmit(4, MAN_1200);
 
+ 
+if (!sensebme.begin()) {while (1);}
+}
+ 
 void loop() {
-    forcedMode(); //turns off pressure measurement
-    temperature = BME280temperature();
-    tempMSB = temperature/100; //8 bit, for Manchester (TEMP)
-    man.transmit(tempMSB);
-    delay(1000);
-    tempLSB = temperature % 100; //8 bit, for Manchester (TEMP)
-    man.transmit(tempLSB);
-    delay(1000);
-    humidity = BME280humidity();
-    humidity = humidity/100;
-    man.transmit(humidity);
-    delay(2000);
-    
+sensebme.readSensor();
+man.transmit((int)sensebme.getTemperature_F());
+man.transmit((int)sensebme.getHumidity());
+delay(3000); 
 }
 
 void forcedMode() { //tell the sensor to take a reading and then go back to sleep
-    TinyWireM.beginTransmission(BME280address); 
+    TinyWireM.beginTransmission(119); 
     TinyWireM.write(0xF4);                             // ctrl_meas
-    TinyWireM.write(0b00100001);                       // Temp sampling 1, pressure sampling 0 (no reading), forced mode
+    TinyWireM.write(0b00100010);                       // Temp sampling 1, pressure sampling 0 (no reading), forced mode
     TinyWireM.endTransmission();
     delay(100); //a built-in delay to give the sensor time to read the value and go to sleep again
 }

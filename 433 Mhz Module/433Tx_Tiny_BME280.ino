@@ -6,7 +6,7 @@
 BME280_I2C sensebme; // Set to used address 0x77 as default // or BME280_I2C bme(0x76); // I2C using address 0x76
  
 void setup() {
- man.setupTransmit(4, MAN_1200);
+ man.setupTransmit(4, MAN_300);
 
  
 if (!sensebme.begin()) {while (1);}

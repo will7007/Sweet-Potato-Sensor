@@ -24,7 +24,7 @@ Try different speeds using this constants, your maximum possible speed will
 #define RX_PIN 7
 void setup() {
   Serial.begin(9600);
-  man.setupReceive(RX_PIN, MAN_1200);
+  man.setupReceive(RX_PIN, MAN_300);
   man.beginReceive();
 }
 

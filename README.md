@@ -1,4 +1,4 @@
-# Sweet-Potato-Sensor
+# Sweet Potato Sensor
 
 When stored and cured, sweet potatoes need to be kept at a certain temperature and humidity level to ensure that they don't go bad.
 Traditionally, sweet potatoes have had their temperature and humidity monitored via sensors that reside outside of the crates in which the potatoes are stored in, but wouldn't it be great if you could monitor the temperature and humidity levels within the storage crates? This sounds simple enough, but there's a catch--raw sweet potatoes have lots of water in them, and high-frequency RF transmitters (like a Bluetooth module) won't transmit very far at all. 

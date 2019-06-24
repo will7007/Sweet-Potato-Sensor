@@ -1,6 +1,7 @@
 #include <Manchester.h>
 
-int counter = 0;
+//int dataNumber = 0;
+//int counter = 0;
 
 #define RX_PIN 12
 void setup() {
@@ -23,9 +24,6 @@ void setup() {
 
   digitalWrite(15,HIGH);
   digitalWrite(16,LOW);
-
-  //Button pin
-  pinMode(7,INPUT);
 }
 
 void loop() {
@@ -53,12 +51,28 @@ void loop() {
     }
     man.beginReceive(); //start listening for next message right after you retrieve the message
   }
-  else if (digitalRead(7)) {  //comment out for just receiving
+  else if (Serial.available() > 0) {  //comment out for just receiving
+    Serial.read();
     delay(10);
     man.stopReceive(); //must not be receiving if you want to transmit
-    Serial.print("Transmitting ");Serial.println(counter);
-    man.transmit(counter);
-    counter++;
+    Serial.print("Transmitting... ");
+      
+    //fake test sensor data
+    man.transmit(1); 
+    delay(200);      
+    man.transmit(10);
+    delay(200);
+    man.transmit(2);
+    delay(200);
+    man.transmit(20);
+    delay(200);
+    man.transmit(3);
+    delay(200);
+    man.transmit(30);
+    delay(200);
+    man.transmit(4);
+    
+    Serial.println("Done.");
     man.beginReceive();
   }
 }

@@ -3,8 +3,11 @@
 
 uint16_t buffering[7] = {0,0,0,0,0,0,0}; 
 int temp,humid,counter = 0;
+bool eof = false;
+
 const int BUTTON = 1; //button pin
 const int ADDRESS = 60;
+
 BME280_I2C sensebme;
 
 void setup() {
@@ -12,7 +15,6 @@ void setup() {
   man.setupTransmit(3, MAN_300);
   man.beginReceive();
 
-//  pinMode(LED,OUTPUT); //led
   pinMode(BUTTON,INPUT);
 
   if (!sensebme.begin()) {
@@ -26,16 +28,14 @@ void setup() {
 void loop() {
   if (man.receiveComplete()) {
     buffering[counter] = man.getMessage();
+    if(buffering[counter] == 4) eof = true;
     counter++;
     man.beginReceive();
   }
   
-  if (counter > 6) {
-    counter = 0;
-//    digitalWrite(LED, HIGH);
-  }
+  if (counter > 6) counter = 0;
   
-  if (digitalRead(BUTTON)) {
+  if (digitalRead(BUTTON) }} eof) {
     man.stopReceive(); //must include this to transmit
     
     sensebme.readSensor();
@@ -45,6 +45,8 @@ void loop() {
     if(temp <= 5) temp = 6;
     if(humid <= 5) humid = 6;
 
+    if(eof) delay(1000); //extra delay for auto-send
+    
     man.transmit(1); //hex values sent out seem to cause issues on the receiving end,
     delay(200);      //particularly when printing out what is received to the serial monitor
     man.transmit(ADDRESS);
@@ -62,8 +64,8 @@ void loop() {
     
     for(int i = 0;i <= 6; i++) man.transmit(buffering[i]);
     
-//    digitalWrite(LED,LOW);
     counter = 0;
+    eof = false;
     man.beginReceive();
   }
 }

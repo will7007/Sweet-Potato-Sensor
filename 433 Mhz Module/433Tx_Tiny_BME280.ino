@@ -4,14 +4,12 @@
 #include "CORE_BME280_I2C.h"
 
 BME280_I2C sensebme;
-const int ADDRESS = 0xA;
-uint16_t buffering[7] = {0,0,0,0,0,0,0}; 
+const int ADDRESS = 10;
 int temp, humid, receive, counter = 0;
  
 void setup() {
   man.setupTransmit(4, MAN_300);
-//  man.setupReceive(3, MAN_300);
-//  man.beginReceive();
+  pinMode(3,INPUT);
 
   if (!sensebme.begin()) {
     while(1){
@@ -26,36 +24,41 @@ void loop() {
   temp = (int)sensebme.getTemperature_F();
   humid = (int)sensebme.getHumidity();
 
-  if(temp <= 5) temp = 6;
-  if(humid <= 5) humid = 6;
-  
-  man.transmit(1); //hex values sent out seem to cause issues on the receiving end,
-  delay(200);      //particularly when printing out what is received to the serial monitor
-  man.transmit(ADDRESS);
-  delay(200);
-  man.transmit(2);
-  delay(200);
-  man.transmit(temp);
-  delay(200);
-  man.transmit(3); //0xCC
-  delay(200);
-  man.transmit(humid);
-  delay(200);
-  man.transmit(4);
+  if(temp <= 9) temp = 10;
+  if(humid <= 9) humid = 10;
 
-//  while(receive != 4) {
-//    if (man.receiveComplete()) {
-//      receive = man.getMessage();
-//      buffering[counter] = receive;
-//      counter++;
-//      man.beginReceive();
-//    }
-//    if (counter > 6) counter = 0;
-//  }
-//
-//  for(int i = 0;i <= 6; i++) man.transmit(buffering[i]);
-//  
-//  counter = 0;
-//  receive = 0;
-//  delay(500); 
+  //0: Reserved
+  //1: Address
+  //2: Temperature
+  //3: Humidity
+  //4: EOF
+  //5: Sensor error
+  //6: Nominal temp/humidity, even address following (we may only need one of these if there is a checksum in a data array)
+  //7: Nominal temp/humidity, odd address following
+  //8: Low battery voltage
+  //9: Reserved
+
+  if(digitalRead(3)) {
+    man.transmit(1); //hex values sent out seem to cause issues on the receiving end,
+    delay(200);      //particularly when printing out what is received to the serial monitor
+    man.transmit(ADDRESS);
+    delay(200);
+    man.transmit(2);
+    delay(200);
+    man.transmit(temp);
+    delay(200);
+    man.transmit(3); //0xCC
+    delay(200);
+    man.transmit(humid);
+    delay(200);
+    man.transmit(4);
+    delay(200); //possibly lengthen to allow for hops
+  }
+  else {
+    for(int i=0;i<5;i++) {
+      man.transmit(6); //even address okay
+      man.transmit(ADDRESS);
+    }
+    delay(1000);
+  }
 }

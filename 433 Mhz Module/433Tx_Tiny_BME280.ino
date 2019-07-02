@@ -5,7 +5,7 @@
 
 BME280_I2C sensebme;
 const int ADDRESS = 10;
-int temp, humid, receive, counter = 0;
+int temp, humid = 0;
  
 void setup() {
   man.setupTransmit(4, MAN_300);
@@ -14,7 +14,7 @@ void setup() {
   if (!sensebme.begin()) {
     while(1){
     man.transmit(5);
-    delay(10);
+    delay(50);
     }
   }
 }
@@ -38,27 +38,20 @@ void loop() {
   //8: Low battery voltage
   //9: Reserved
 
-  if(digitalRead(3)) {
     man.transmit(1); //hex values sent out seem to cause issues on the receiving end,
-    delay(200);      //particularly when printing out what is received to the serial monitor
+    delay(50);      //particularly when printing out what is received to the serial monitor
     man.transmit(ADDRESS);
-    delay(200);
+    delay(50);
     man.transmit(2);
-    delay(200);
+    delay(50);
     man.transmit(temp);
-    delay(200);
-    man.transmit(3); //0xCC
-    delay(200);
+    delay(50);
+    man.transmit(3);
+    delay(50);
     man.transmit(humid);
-    delay(200);
+    delay(50);
     man.transmit(4);
-    delay(200); //possibly lengthen to allow for hops
-  }
-  else {
-    for(int i=0;i<5;i++) {
-      man.transmit(6); //even address okay
-      man.transmit(ADDRESS);
-    }
-    delay(1000);
-  }
+    delay(50); //these might be lowered to 0 but I am not 100% sure that would be wise
+    
+    if(!(digitalRead(3))) delay(5000);
 }

@@ -3,9 +3,22 @@
 #include <Manchester.h>
 #include "CORE_BME280_I2C.h"
 
+//0: Reserved
+//1: Address
+//2: Temperature
+//3: Humidity
+//4: EOF
+//5: Sensor error
+//6: Nominal temp/humidity, even address following (we may only need one of these if there is a checksum in a data array)
+//7: Nominal temp/humidity, odd address following
+//8: Low battery voltage
+//9: Reserved
+  
 BME280_I2C sensebme;
-const int ADDRESS = 10;
-int temp, humid = 0;
+const uint8_t ADDRESS = 10;
+const uint8_t LENGTH = 4;
+//int temp, humid = 0;
+uint8_t data[4] = {LENGTH, ADDRESS, 1, 2}; //the first spot in the data array must be the packet length for the message to send
  
 void setup() {
   man.setupTransmit(4, MAN_300);
@@ -21,37 +34,12 @@ void setup() {
  
 void loop() {
   sensebme.readSensor();
-  temp = (int)sensebme.getTemperature_F();
-  humid = (int)sensebme.getHumidity();
+  data[2] = (int)sensebme.getTemperature_F();
+  data[3] = (int)sensebme.getHumidity();
 
-  if(temp <= 9) temp = 10;
-  if(humid <= 9) humid = 10;
+  if(data[2] <= 9) data[2] = 10;
+  if(data[3] <= 9) data[3] = 10;
 
-  //0: Reserved
-  //1: Address
-  //2: Temperature
-  //3: Humidity
-  //4: EOF
-  //5: Sensor error
-  //6: Nominal temp/humidity, even address following (we may only need one of these if there is a checksum in a data array)
-  //7: Nominal temp/humidity, odd address following
-  //8: Low battery voltage
-  //9: Reserved
-
-    man.transmit(1); //hex values sent out seem to cause issues on the receiving end,
-    delay(50);      //particularly when printing out what is received to the serial monitor
-    man.transmit(ADDRESS);
-    delay(50);
-    man.transmit(2);
-    delay(50);
-    man.transmit(temp);
-    delay(50);
-    man.transmit(3);
-    delay(50);
-    man.transmit(humid);
-    delay(50);
-    man.transmit(4);
-    delay(50); //these might be lowered to 0 but I am not 100% sure that would be wise
-    
-    if(!(digitalRead(3))) delay(5000);
+  man.transmitArray(LENGTH,data); //remember: datalength does not correspond to array indecies (send spot 0 and spot 1 == datalength of 2)
+  if(!(digitalRead(3))) delay(5000);
 }

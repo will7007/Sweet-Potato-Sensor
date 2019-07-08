@@ -1,24 +1,24 @@
-//Works at 1Mhz
-#include <TinyWireM.h>
+//For an AtTiny85 @ 1Mhz
 #include <Manchester.h>
 #include "CORE_BME280_I2C.h"
+#include "tinysnore.h"
 
-//0: Reserved
-//1: Address
-//2: Temperature
-//3: Humidity
-//4: EOF
-//5: Sensor error
-//6: Nominal temp/humidity, even address following (we may only need one of these if there is a checksum in a data array)
-//7: Nominal temp/humidity, odd address following
-//8: Low battery voltage
-//9: Reserved
+
+//Transmission "abreviations" (the address of the sender will follow one of these messages, and possibly following this address will be a value
+//One of these will always be in the second slot of the transmission array (after the message length), or after the conclusion of another device's data in a repackaged array
+
+//0: No error
+//1: Temperature outside threshold (followed by address and temperature)
+//2: Humidity outside threshold (followed by address and humidity)
+//3: Temperature AND humidity outside threshold (followed by address, temperature, then humidity)
+//4: Low battery voltage (followed by address and voltage level)
+//5: Sensor error (not responding)
   
 BME280_I2C sensebme;
 const uint8_t ADDRESS = 10;
 const uint8_t LENGTH = 4;
-//int temp, humid = 0;
-uint8_t data[4] = {LENGTH, ADDRESS, 1, 2}; //the first spot in the data array must be the packet length for the message to send
+
+uint8_t data[4] = {LENGTH, ADDRESS, 0, 0}; //the first spot in the data array must be the packet length for the message to send
  
 void setup() {
   man.setupTransmit(4, MAN_300);
@@ -27,19 +27,19 @@ void setup() {
   if (!sensebme.begin()) {
     while(1){
     man.transmit(5);
-    delay(50);
+    delay(100);
     }
   }
 }
  
 void loop() {
   sensebme.readSensor();
+  
   data[2] = (int)sensebme.getTemperature_F();
   data[3] = (int)sensebme.getHumidity();
 
-  if(data[2] <= 9) data[2] = 10;
-  if(data[3] <= 9) data[3] = 10;
-
   man.transmitArray(LENGTH,data); //remember: datalength does not correspond to array indecies (send spot 0 and spot 1 == datalength of 2)
-  if(!(digitalRead(3))) delay(5000);
+  
+  if(!(digitalRead(3))) snore(8000);
+  else snore(1000);
 }

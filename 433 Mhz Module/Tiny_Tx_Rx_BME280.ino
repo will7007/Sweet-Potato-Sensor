@@ -20,7 +20,8 @@ void setup() {
   //This part is from https://thewanderingengineer.com/2014/08/11/pin-change-interrupts-on-attiny85/
   GIMSK = 0b00100000;    // turns on pin change interrupts
   PCMSK = 0b00010000;    // turn on interrupts on pins PB4
-
+  sei();
+  
   //  man.workAround1MhzTinyCore(); DO NOT USE THIS FUNCTION! It makes the program transmit too fast
   man.setupReceive(4, MAN_300);
   man.setupTransmit(3, MAN_300);
@@ -41,8 +42,10 @@ void setup() {
 void loop() {
   sleep();
   //Post-sleep//
-  cli();
-  digitalWrite(1,LOW);
+  GIMSK = 0b00000000;    // turns OFF pin change interrupts
+  
+  digitalWrite(1,HIGH);
+  
   int i=0;
   do {
     if(receiveMessage()) break;
@@ -51,14 +54,17 @@ void loop() {
       i++;
     }
   }
-  while(i<100); //this limit will likely need to be raised when larger packets are sent
+  while(i<300); //this limit will likely need to be raised when larger packets are sent
+  
+  GIMSK = 0b00100000;    // turns pin change interrupts back on
+  
+  digitalWrite(1,LOW);
 }
 
 ISR(PCINT0_vect) {} //the interupt does not need to do anything, it just needs to happen to exit sleep mode
 
 bool receiveMessage() {
   if (man.receiveComplete()) {
-    digitalWrite(1,HIGH);
       man.stopReceive();
 
       transmitBuffer[4] = buffer[1]; //address
@@ -85,7 +91,7 @@ bool receiveMessage() {
 void sleep() {
   sleep_enable();
   sleep_bod_disable(); //not 100% sure the BOD is off due to the AtTiny core I'm using
-  sei();
+//  sei();
   sleep_cpu();
   //POST-INTERRUPT//
   sleep_disable();

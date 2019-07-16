@@ -6,3 +6,5 @@ Traditionally, sweet potatoes have had their temperature and humidity monitored 
 That's why this project aims to use cheap 433Mhz RF modules, a BME280 (for sensing), and an AtTiny85 to form a network of low-power temperature and humidity sensors to monitor the temperature and humidity within sweet potato storage crates.
 
 This project is still in progress--I aim on finishing it by the end of summer, as I am developing the sensor as part of an internship at NC State University.
+
+I appologize if I have not properly licensed my code/the libraries I have used at this point in time. I will include all required licenses when the project concludes.

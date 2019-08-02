@@ -23,7 +23,7 @@ void loop() {
 
   // send packet
   LoRa.beginPacket();
-  LoRa.print("BEACON KN4WAI ");
+  LoRa.print("BEACON CALLSIGN");
   LoRa.print(counter);
   LoRa.endPacket();
 

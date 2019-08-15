@@ -1,13 +1,9 @@
-# 433 Mhz Modules
-[these]: /url "https://www.amazon.com/UCEC-XY-MK-5V-Transmitter-Receiver-Raspberry/dp/B017AYH5G0/ref=sr_1_1_sspa?crid=3MDRJEGJM7CT7&keywords=433mhz+transmitter+and+receiver&qid=1562610321&s=gateway&sprefix=433+mhz+%2Caps%2C155&sr=8-1-spons&psc=1"
-[Manchester Encoding library]: /url "https://github.com/mchr3k/arduino-libs-manchester"
-[BME280 I2C library]: /url "https://www.14core.com/wiring-the-bme280-environmental-sensor-using-i2cspi-interface-with-microcontroller/"
-[TinySnore Library]: /url "https://github.com/connornishijima/TinySnore"
-We're using [these] cheap Tx/Rx modules from Amazon for our tests. After testing the modules within the sweet potato crates, this readme will be updated with how they performed.
+# 433 Mhz (and 315 Mhz) Modules
+We used [these](https://www.amazon.com/UCEC-XY-MK-5V-Transmitter-Receiver-Raspberry/dp/B017AYH5G0/ref=sr_1_1_sspa?crid=3MDRJEGJM7CT7&keywords=433mhz+transmitter+and+receiver&qid=1562610321&s=gateway&sprefix=433+mhz+%2Caps%2C155&sr=8-1-spons&psc=1) cheap 433 Mhz Tx/Rx modules from Amazon for our tests. We also used [these](https://www.amazon.com/dp/B07415XCSD/ref=sspa_dk_detail_5?psc=1&pd_rd_i=B07415XCSD&pd_rd_w=C7678&pf_rd_p=8a8f3917-7900-4ce8-ad90-adf0d53c0985&pd_rd_wg=tGT7p&pf_rd_r=HE2SKCKS4E3B5BCJ2210&pd_rd_r=41d57291-f429-4f40-a710-dcc807e19f55&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUFLMERUQ0Y0NktFNSZlbmNyeXB0ZWRJZD1BMTA0MTY3MzE3NEpHSlQ3UU83WkQmZW5jcnlwdGVkQWRJZD1BMTAyMTk0ODhQVk1SSlc2S1Q2UyZ3aWRnZXROYW1lPXNwX2RldGFpbCZhY3Rpb249Y2xpY2tSZWRpcmVjdCZkb05vdExvZ0NsaWNrPXRydWU=) 315 Mhz modules as well, which are pin/code compatible with the 433 Mhz modules.
 
-The code here utilizes the [Manchester Encoding library], the [BME280 I2C library], and the [TinySnore library].
+The code included here utilizes modified example code/header files from the [Manchester Encoding library](https://github.com/mchr3k/arduino-libs-manchester), the [BME280 I2C library](https://www.14core.com/wiring-the-bme280-environmental-sensor-using-i2cspi-interface-with-microcontroller/), and the [TinySnore Library](https://github.com/connornishijima/TinySnore).
 
-The Manchester Encoding library is not licensed. As such, I have encluded it here through Github's terms regarding the forking/cloning of unlicensed code. Furthermore, the code no longer needs to be used in this non-commercial research project and it is included solely for the purposes of thorough prototype documentation as opposed to distribution.
+The Manchester Encoding library is not licensed. As such, I have encluded it here through Github's policy regarding the forking/cloning of unlicensed code. Note that this code no longer needs to be used in this non-commercial research project and it is included solely for the purposes of thorough prototype documentation as opposed to distribution.
 
 The BME280 library code is licensed under the Creative Commons Attribution Non-Commercial 3.0 License (http://creativecommons.org/licenses/by-nc-sa/3.0/).
 
